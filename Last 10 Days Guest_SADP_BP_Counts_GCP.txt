@@ -1,0 +1,6 @@
+SELECT DATE(creationdate_time) AS Creation_Date, COUNT(DISTINCT bpid) AS Guest_SADP_BPID_Counts
+  FROM `cust-sapcrm-p-a166.cust_sapcrm_srv.guestinformation_hst` 
+  WHERE DATE(creationdate_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)
+  AND DATE(creationdate_time) < CURRENT_DATE
+  GROUP BY Creation_Date
+  ORDER BY Creation_Date

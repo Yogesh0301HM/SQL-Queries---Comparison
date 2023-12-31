@@ -1,0 +1,42 @@
+with hybris as (
+select b.*
+from p1_cdw_ad..customer b
+inner join p1_cdw_ad..country cu on cu.country_id=b.country_id
+inner join p1_cdw_ad..corporate_brand c on c.corporate_brand_id=b.corporate_brand_id
+inner join p1_cdw_td..a_load_file f on f.load_file_id=b.load_file_id
+where b.created_date_id<= CURRENT_DATE - INTERVAL '1 DAY' and b.created_date_id >= CURRENT_DATE - INTERVAL '10 DAY' AND b.SOURCE_ID IN (41,45) and COUNTRY_ISO_CODE<>'CN'
+AND f.FILE_NAME not LIKE 'S037%' AND (MARKET_PLACE_ID IS NULL OR MARKET_PLACE_ID=-1)
+and COUNTRY_ISO_CODE||CORPORATE_BRAND_SRC_NO  not in ('BG3',
+'CY3',
+'CZ3',
+'DK3',
+'EE3',
+'FI3',
+'GR3',
+'HR3',
+'HU3',
+'KR6',
+'LT3',
+'LU3',
+'LV3',
+'PL3',
+'RO3',
+'RU3',
+'RU5',
+'RU6',
+'SI3',
+'SK3')),
+total as (
+select created_date_id,count(distinct country_id||CUSTOMER_NO||corporate_brand_id||LOCATION_ID) as total_customer from hybris
+group by created_date_id
+),
+HM as (
+select created_date_id,count(distinct country_id||CUSTOMER_NO||corporate_brand_id||LOCATION_ID) as total_HM_customer from hybris where corporate_brand_id=1
+group by created_date_id),
+pb as (
+  select created_date_id,count(distinct country_id||CUSTOMER_NO||corporate_brand_id||LOCATION_ID) as total_pb_customer from hybris where corporate_brand_id!=1
+group by created_date_id
+)
+select total.created_date_id,total_customer from total
+left join hm on total.created_date_id=hm.created_date_id
+left join pb on total.created_date_id=pb.created_date_id

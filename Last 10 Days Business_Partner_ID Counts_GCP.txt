@@ -1,0 +1,6 @@
+SELECT DATE(account_primary_create_timestamp) AS Creation_Date, COUNT(DISTINCT business_partner_id) AS BP_Counts_GCP
+FROM `customer-p-a6ae.customer_srv.customer`
+WHERE DATE(account_primary_create_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)
+AND DATE(account_primary_create_timestamp) < CURRENT_DATE 
+GROUP BY Creation_Date
+ORDER BY Creation_Date

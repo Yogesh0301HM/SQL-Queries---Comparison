@@ -1,0 +1,10 @@
+WITH cte_1 AS
+(
+SELECT * FROM `cust-sapcrm-p-a166.cust_sapcrm_srv.memberinformation_hst`
+)
+SELECT DATE(other_data.identification_data.member_creation_date_and_time) AS Creation_Date, COUNT(DISTINCT primary_key.business_partner_identifier) AS Member_SADP_BPID_Counts
+FROM cte_1
+WHERE DATE(other_data.identification_data.member_creation_date_and_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)
+AND DATE(other_data.identification_data.member_creation_date_and_time)  < CURRENT_DATE AND other_data.identification_data.customer_data_origin not in ('ZAFO','ZSSG','ZMYN')
+GROUP BY Creation_Date
+ORDER BY Creation_Date

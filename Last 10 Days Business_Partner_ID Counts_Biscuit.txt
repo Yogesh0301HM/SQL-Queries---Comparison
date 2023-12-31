@@ -1,0 +1,40 @@
+With cte AS 
+(
+  SELECT DATE(MEMBER_CREATION_DATETIME) AS Creation_Date, COUNT(DISTINCT business_partner_id) AS BP_Counts_Biscuit
+FROM cdwowner.business_partner
+WHERE DATE(MEMBER_CREATION_DATETIME) >= CURRENT_DATE - INTERVAL '10 DAY' AND customer_data_origin_id not in (SELECT customer_data_origin_id FROM p1_cdwetl.customer_data_origin
+WHERE customer_data_origin_code in ('ZAFO','ZSSG','ZMYN'))
+AND DATE(MEMBER_CREATION_DATETIME) < CURRENT_DATE
+GROUP BY DATE(MEMBER_CREATION_DATETIME)
+ORDER BY Creation_Date
+),
+cte_1 AS
+(
+SELECT DATE(MEMBER_CREATION_DATETIME) AS Creation_Date_1, COUNT(DISTINCT business_partner_no) AS Guest_Checkout_N
+from cdwowner.business_partner
+WHERE DATE(MEMBER_CREATION_DATETIME) >= CURRENT_DATE - INTERVAL '10 DAY' AND Guest_Checkout ='N'
+AND DATE(MEMBER_CREATION_DATETIME) < CURRENT_DATE AND customer_data_origin_id not in (SELECT customer_data_origin_id FROM p1_cdwetl.customer_data_origin
+WHERE customer_data_origin_code in ('ZAFO','ZSSG','ZMYN'))
+GROUP BY DATE(MEMBER_CREATION_DATETIME)
+ORDER BY Creation_Date_1
+),
+cte_2 AS
+(
+  SELECT DATE(MEMBER_CREATION_DATETIME) AS Creation_Date_2, COUNT(DISTINCT business_partner_no) AS Guest_Checkout_Y
+from cdwowner.business_partner
+WHERE DATE(MEMBER_CREATION_DATETIME) >= CURRENT_DATE - INTERVAL '10 DAY' AND Guest_Checkout ='Y'
+AND DATE(MEMBER_CREATION_DATETIME) < CURRENT_DATE AND customer_data_origin_id not in (SELECT customer_data_origin_id FROM p1_cdwetl.customer_data_origin
+WHERE customer_data_origin_code in ('ZAFO','ZSSG','ZMYN'))
+GROUP BY DATE(MEMBER_CREATION_DATETIME)
+ORDER BY Creation_Date_2
+)
+SELECT ct.Creation_Date, ct1.Creation_Date_1, ct2.Creation_Date_2, ct.BP_Counts_Biscuit, ct1.Guest_Checkout_N, ct2.Guest_Checkout_Y
+FROM cte As ct
+LEFT JOIN
+cte_1 AS ct1
+ON Creation_Date=Creation_Date_1
+LEFT JOIN 
+cte_2 AS ct2
+ON 
+Creation_Date_1=Creation_Date_2
+ORDER BY Creation_Date DESC

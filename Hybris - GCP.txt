@@ -1,0 +1,11 @@
+SELECT sadp.creation_time,count(distinct sales_customer_rk) as count FROM `customer-p-a6ae.customer_srv.customer_hst` idp
+INNER JOIN (
+SELECT DISTINCT date(creation_time) as creation_time,customerbasegoepdaily_rk_clr as c FROM `cust-hybris-p-9ba7.customer_hybris_srv.customerbasegoepdaily_hst`
+where date(creation_time)<= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) and date(creation_time)>= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)
+union all
+SELECT DISTINCT date(creation_time) as creation_time,customerbasenb_rk_clr as c FROM `cust-hybris-p-9ba7.customer_hybris_srv.customerbasenb_hst`
+where date(creation_time)<= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) and date(creation_time)>= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) )sadp on
+idp.sales_customer_rk=sadp.c
+WHERE (source_code in ('HYBRIS') or last_change_source IN ('HYBRIS'))
+AND (DATE(account_secondary_update_timestamp)>= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) or DATE(account_secondary_create_timestamp)>= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)) AND sales_customer_rk IS NOT NULL
+group by sadp.creation_time

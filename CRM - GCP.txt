@@ -1,0 +1,23 @@
+with total_bp_count as (SELECT DATE(account_primary_create_timestamp) as account_primary_create_timestamp, count(DISTINCT business_partner_id) AS BP_Counts_GCP
+FROM `customer-p-a6ae.customer_srv.customer_hst`
+WHERE DATE(account_primary_create_timestamp) <= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)  and DATE(account_primary_create_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY)--and is_guest=true
+--and (last_change_source='CRM' OR SOURCE_CODE='CRM')
+and country_rk||corporate_brand_rk not in (select country_rk||corporate_brand_rk from customer-p-a6ae.customer_srv.adm_customer_migration where migrated_to_src in ('CAPI'))
+group by DATE(account_primary_create_timestamp)),
+toal_guest_count as (SELECT DATE(account_primary_create_timestamp) as account_primary_create_timestamp, count(DISTINCT business_partner_id) AS BP_Counts_GCP
+FROM `customer-p-a6ae.customer_srv.customer_hst`
+WHERE DATE(account_primary_create_timestamp) <= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)  and DATE(account_primary_create_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) and is_guest=true
+--and (last_change_source='CRM' OR SOURCE_CODE='CRM')
+and country_rk||corporate_brand_rk not in (select country_rk||corporate_brand_rk from customer-p-a6ae.customer_srv.adm_customer_migration where migrated_to_src in ('CAPI'))
+group by DATE(account_primary_create_timestamp)),
+toal_registered_count as (
+SELECT DATE(account_primary_create_timestamp) as account_primary_create_timestamp, count(DISTINCT business_partner_id) AS BP_Counts_GCP
+FROM `customer-p-a6ae.customer_srv.customer_hst`
+WHERE DATE(account_primary_create_timestamp) <= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)  and DATE(account_primary_create_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 10 DAY) and is_guest=false
+--and (last_change_source='CRM' OR SOURCE_CODE='CRM')
+and country_rk||corporate_brand_rk not in (select country_rk||corporate_brand_rk from customer-p-a6ae.customer_srv.adm_customer_migration where migrated_to_src in ('CAPI'))
+group by DATE(account_primary_create_timestamp)
+)
+select t.account_primary_create_timestamp,t.BP_Counts_GCP as total_gcp_bp_count,g.BP_Counts_GCP as guest_bp_gcp_count,r.BP_Counts_GCP as registered_gcp_bp_count from total_bp_count t
+left join toal_guest_count g on g.account_primary_create_timestamp=t.account_primary_create_timestamp
+left join toal_registered_count r on r. account_primary_create_timestamp=t.account_primary_create_timestamp

@@ -1,0 +1,4 @@
+select date(TRANSACTION_TIMESTAMP) as Transaction_date ,count(*) as Record_count 
+from P1_CDW_DMBASE..FT_ONL_CLUB_MEM_PNTS_TRANS_DTL
+where date(TRANSACTION_TIMESTAMP) IN (CURRENT_TIMESTAMP-1) 
+group by date(TRANSACTION_TIMESTAMP)

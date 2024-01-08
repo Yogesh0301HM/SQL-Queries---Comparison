@@ -1,0 +1,39 @@
+SELECT COUNT(DISTINCT customer_rk) As No_Of_BP_Ids, DATE(LastTrasactionTimestmap) AS Last_Transaction_Timestam 
+FROM (
+  SELECT
+  DISTINCT bpa.business_partner_no AS customer_rk,
+  ocmpb.business_partner_id,
+  ch.country_code AS dim_country_rk,
+  cbh.corporate_brand_src_no AS corporate_brand_rk,
+  ocmpb.last_transaction_timestamp AS LastTrasactionTimestmap,
+  ocmpb.coupon_earliest_expiry_date AS coupon_earliest_expiry_timestamp,
+  ocmpb.coupon_latest_issue_date AS coupon_latest_issue_timestamp,
+  ocmpb.current_tier AS current_tier,
+  ocmpb.tier_valid_from AS tier_valid_from_timestamp,
+  ocmpb.tier_valid_to AS tier_valid_to_timestamp,
+  ocmpb.previous_tier AS previous_tier,
+  ocmpb.top_tier_end_date AS top_tier_end_timestamp,
+  ocmpb.current_year_earned_balance,
+  ocmpb.current_year_converted_points,
+  ocmpb.previous_year_earned_balance,
+  ocmpb.previous_year_converted_points,
+  ocmpb.points_to_next_bonus,
+  ocmpb.CURRENT_YEAR_MSH_END_DATE AS current_year_membership_end_timestamp
+FROM
+  P1_CDW_DMBASE..ft_onl_club_member_point_bal AS ocmpb
+LEFT JOIN
+  P1_CDW_DMBASE..dim_business_partner AS bpa
+ON
+  ocmpb.business_partner_id=bpa.business_partner_id
+LEFT JOIN
+  P1_CDW_DMBASE..dim_corporate_brand AS cbh
+ON
+  ocmpb.corporate_brand_id=cbh.corporate_brand_id
+LEFT JOIN
+  P1_CDW_DMBASE..dim_country AS ch
+ON
+  ocmpb.country_id=ch.country_id
+WHERE DATE(last_transaction_timestamp) = (CURRENT_TIMESTAMP-1)
+)
+As Rec_BP
+GROUP BY Last_Transaction_Timestam

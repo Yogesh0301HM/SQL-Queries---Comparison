@@ -1,0 +1,3 @@
+SELECT COUNT(distinct business_partner_id) AS NO_Of_Rec, DATE(last_transaction_timestamp) as Last_Transaction_Timestamp FROM `loyalty-p-3bc1.loyalty_srv.point_balance` 
+WHERE DATE(last_transaction_timestamp) = current_date()-1
+GROUP BY DATE(last_transaction_timestamp)

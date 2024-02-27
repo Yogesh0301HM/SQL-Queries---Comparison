@@ -1,0 +1,9 @@
+SELECT DATE(LasModifiedTimeate) AS Last_ModifiedTimestmap, Rec_Count
+FROM (
+select  timestamp_trunc(last_modified_timestamp,day) AS LasModifiedTimeate,count(*) AS Rec_Count from `loyalty-p-3bc1.loyalty_srv.coupon_transaction`
+WHERE TIMESTAMP_TRUNC(coupon_start_timestamp, DAY) > TIMESTAMP("1900-01-01") 
+and DATE(last_modified_timestamp) >= (current_date() -7 ) 
+AND DATE(last_modified_timestamp) < CURRENT_DATE
+group by LasModifiedTimeate
+order by LasModifiedTimeate desc
+) AS RecCount

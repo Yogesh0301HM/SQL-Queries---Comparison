@@ -1,0 +1,38 @@
+SELECT DATE(last_modified_timestamp )   , count(*) AS Rec_Count FROM
+(SELECT 
+  coh.offer_code     ,
+  bpa.business_partner_no     ,
+   ch.country_code     ,
+  cbh.corporate_brand_src_no    ,
+ccub.coupon_code    ,
+  ccub.offer_type,
+  ccub.coupon_status_code,
+  ccub.coupon_value,
+  ccub.coupon_start_date   ,
+  ccub.coupon_end_date    ,
+  ccub.loyalty_program_no    ,
+  ccub.discount_store_code   ,
+  ccub.last_modified_timestamp    
+FROM
+   P1_CDW_DMBASE..FT_ONL_CLUB_COUPON_UPDATE ccub
+LEFT JOIN
+   P1_CDW_DMBASE..dim_business_partner bpa
+ON
+ccub.business_partner_id =bpa.business_partner_id
+LEFT JOIN
+   P1_CDW_DMBASE..dim_onl_club_offer coh
+ON
+  ccub.onl_club_offer_id=coh.onl_club_offer_id
+LEFT JOIN
+   P1_CDW_DMBASE..dim_corporate_brand cbh
+ON
+  ccub.corporate_brand_id=cbh.corporate_brand_id 
+LEFT JOIN
+   P1_CDW_DMBASE..dim_country ch
+ON
+  ccub.country_id=ch.country_id
+WHERE DATE(ccub.last_modified_timestamp) >= CURRENT_DATE-INTERVAL '7 DAY' 
+and DATE(ccub.last_modified_timestamp) < CURRENT_DATE
+) as Rec
+group by DATE(last_modified_timestamp)  
+order by DATE(last_modified_timestamp) DESC

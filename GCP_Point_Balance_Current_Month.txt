@@ -1,0 +1,10 @@
+SELECT 
+      EXTRACT(YEAR FROM Last_Transaction_Timestamp) AS PB_YEAR,
+      EXTRACT(MONTH FROM Last_Transaction_Timestamp) AS PB_Month,
+      COUNT(business_partner_id) AS Rec_Count
+  FROM (
+        SELECT business_partner_id, DATE(last_transaction_timestamp) as Last_Transaction_Timestamp FROM `loyalty-p-3bc1.loyalty_srv.point_balance` 
+        WHERE EXTRACT(YEAR FROM last_transaction_timestamp) = EXTRACT(YEAR FROM CURRENT_DATE)
+AND EXTRACT(MONTH FROM last_transaction_timestamp) = EXTRACT(MONTH FROM CURRENT_DATE)
+  ) PB
+  GROUP BY PB_YEAR, PB_Month

@@ -1,0 +1,4 @@
+select country_rk, count(distinct proposition_code) AS PropositionCode 
+from `loyaltymarketing-p-cdb0.loyalty_marketing_srv.offer_proposition`
+where date(last_modified_timestamp) = current_date() -2
+group by country_rk

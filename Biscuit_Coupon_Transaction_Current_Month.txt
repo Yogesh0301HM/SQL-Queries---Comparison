@@ -1,0 +1,42 @@
+SELECT 
+      EXTRACT(YEAR FROM LastModifiedTimestamp) AS CT_YEAR,
+      EXTRACT(MONTH FROM LastModifiedTimestamp) AS CT_MONTH,
+      COUNT(BP_ID) AS Rec_Count
+FROM (
+  SELECT 
+  coh.offer_code,
+  bpa.business_partner_no AS BP_ID,
+   ch.country_code     ,
+  cbh.corporate_brand_src_no    ,
+ccub.coupon_code    ,
+  ccub.offer_type,
+  ccub.coupon_status_code,
+  ccub.coupon_value,
+  ccub.coupon_start_date   ,
+  ccub.coupon_end_date    ,
+  ccub.loyalty_program_no    ,
+  ccub.discount_store_code   ,
+  ccub.last_modified_timestamp  AS LastModifiedTimestamp  
+FROM
+   P1_CDW_DMBASE..FT_ONL_CLUB_COUPON_UPDATE ccub
+LEFT JOIN
+   P1_CDW_DMBASE..dim_business_partner bpa
+ON
+ccub.business_partner_id =bpa.business_partner_id
+LEFT JOIN
+   P1_CDW_DMBASE..dim_onl_club_offer coh
+ON
+  ccub.onl_club_offer_id=coh.onl_club_offer_id
+LEFT JOIN
+   P1_CDW_DMBASE..dim_corporate_brand cbh
+ON
+  ccub.corporate_brand_id=cbh.corporate_brand_id 
+LEFT JOIN
+   P1_CDW_DMBASE..dim_country ch
+ON
+  ccub.country_id=ch.country_id
+WHERE EXTRACT(YEAR FROM ccub.last_modified_timestamp) = EXTRACT(YEAR FROM CURRENT_DATE)
+AND EXTRACT(MONTH FROM ccub.last_modified_timestamp) = EXTRACT(MONTH FROM CURRENT_DATE)
+)
+As Rec
+GROUP BY CT_YEAR, CT_MONTH

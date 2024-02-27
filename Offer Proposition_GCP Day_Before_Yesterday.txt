@@ -1,0 +1,4 @@
+select count(*) AS Rec_Count,date(last_modified_timestamp) AS LastModifiedTimestamp
+from `loyaltymarketing-p-cdb0.loyalty_marketing_srv.offer_proposition`
+where date(last_modified_timestamp) = current_date() -2
+GROUP BY date(last_modified_timestamp)

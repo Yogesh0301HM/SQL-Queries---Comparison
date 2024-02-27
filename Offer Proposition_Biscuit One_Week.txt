@@ -1,0 +1,5 @@
+select count(*) AS Rec_Counts, date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') AS LastModifiedDate 
+from p1_cdw_dmbase..ft_onl_club_offer_proposition ocpb
+where date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') > current_date -9 and date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') < current_date -1
+group by date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') 
+order by  date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') desc

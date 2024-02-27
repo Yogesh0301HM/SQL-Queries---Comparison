@@ -1,0 +1,6 @@
+select dcb.country_code AS CountryCode, count(distinct ocpb.proposition_code) AS PropositionCode
+from p1_cdw_dmbase..ft_onl_club_offer_proposition ocpb
+left join p1_cdw_dmbase..dim_country dcb on ocpb.COUNTRY_ID=dcb.COUNTRY_ID
+where date(ocpb.last_modified_timestamp + INTERVAL '-1 hour') = current_date -2
+group by dcb.country_code 
+order by  dcb.country_code 

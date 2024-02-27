@@ -1,0 +1,12 @@
+SELECT 
+     EXTRACT(YEAR FROM LastModifiedTimestamp) AS CT_YEAR,
+     EXTRACT(MONTH FROM LastModifiedTimestamp) AS CT_MONTH,
+     COUNT(*) AS Rec_Count
+FROM (
+select Date(last_modified_timestamp) AS LastModifiedTimestamp
+from `loyalty-p-3bc1.loyalty_srv.coupon_transaction`
+WHERE TIMESTAMP_TRUNC(coupon_start_timestamp, DAY) > TIMESTAMP("1900-01-01") 
+and date(last_modified_timestamp) > '2023-06-30'
+AND DATE(last_modified_timestamp) <= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH)
+) AS CT
+GROUP BY CT_YEAR, CT_MONTH

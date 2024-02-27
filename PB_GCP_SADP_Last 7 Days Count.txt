@@ -1,0 +1,4 @@
+SELECT DATE(last_transaction_date_and_time) AS Last_Transaction_Date, count(*) AS COUNT  
+FROM `custclub-sapcrm-p-2c99.custclub_sapcrm_srv.clubmemberpointsbalancecollection_hst` WHERE TIMESTAMP_TRUNC(meta_change_timestamp, DAY) > TIMESTAMP("1900-01-01") 
+and DATE(last_transaction_date_and_time) >= (current_date() -7 ) and DATE(last_transaction_date_and_time) < (current_date())
+GROUP BY DATE(last_transaction_date_and_time)

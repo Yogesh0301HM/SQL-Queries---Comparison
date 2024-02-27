@@ -1,0 +1,5 @@
+select DATE(points_transaction_date_and_time) AS Transaction_Date, identification_data.country_code as Country,count(*) as Record_Count 
+FROM `custclub-sapcrm-p-2c99.custclub_sapcrm_srv.clubmemberpointtransaction_hst` 
+WHERE DATE(points_transaction_date_and_time) = CURRENT_DATE()-1  and transaction_header_identifier is not null
+group by identification_data.country_code, Transaction_Date
+order by identification_data.country_code

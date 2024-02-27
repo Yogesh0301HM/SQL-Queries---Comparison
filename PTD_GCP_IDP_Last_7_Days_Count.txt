@@ -1,0 +1,4 @@
+SELECT DATE(transaction_timestamp) as Transaction_date,count(*) as Record_count 
+FROM `loyalty-p-3bc1.loyalty_srv.point_transaction_detail`  
+WHERE DATE(transaction_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND DATE(transaction_timestamp) < CURRENT_DATE
+group by DATE(transaction_timestamp)

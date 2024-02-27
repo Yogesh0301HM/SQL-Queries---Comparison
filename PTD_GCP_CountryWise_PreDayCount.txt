@@ -1,0 +1,5 @@
+SELECT DATE(transaction_timestamp) AS Transaction_Date, country_rk as Country,count(*) as Record_Count 
+FROM `loyalty-p-3bc1.loyalty_srv.point_transaction_detail` 
+where  DATE(transaction_timestamp) = CURRENT_DATE()-1 
+group by country_rk, Transaction_Date 
+order by country_rk

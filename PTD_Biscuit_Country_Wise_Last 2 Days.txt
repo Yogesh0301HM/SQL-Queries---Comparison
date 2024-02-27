@@ -1,0 +1,6 @@
+select c.date(TRANSACTION_TIMESTAMP) AS Transaction_Date, c.country_iso_code as Country,count(*) as Record_Count 
+from P1_CDW_DMBASE..FT_ONL_CLUB_MEM_PNTS_TRANS_DTL pt
+LEFT JOIN P1_CDW_AD..country c ON pt.country_id = c.country_id
+where date(TRANSACTION_TIMESTAMP) IN (CURRENT_TIMESTAMP-2) 
+group by c.country_iso_code, Transaction_Date
+order by c.country_iso_code

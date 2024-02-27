@@ -1,0 +1,5 @@
+select DATE(points_transaction_date_and_time) as Transaction_Date, count(*) as Record_Count 
+FROM `custclub-sapcrm-p-2c99.custclub_sapcrm_srv.clubmemberpointtransaction_hst` 
+WHERE DATE(points_transaction_date_and_time) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY) AND DATE(points_transaction_date_and_time) < current_date
+and transaction_header_identifier is not null 
+GROUP BY DATE(points_transaction_date_and_time)

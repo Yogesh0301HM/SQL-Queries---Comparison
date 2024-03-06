@@ -1,5 +1,0 @@
-SELECT country_rk, count(distinct business_partner_id) AS Count
-FROM `loyalty-p-3bc1.loyalty_srv.point_balance` 
-WHERE DATE(last_transaction_timestamp) IN (current_date()-1)
-GROUP BY country_rk
-ORDER BY country_rk

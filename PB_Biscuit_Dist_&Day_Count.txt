@@ -1,10 +1,11 @@
-SELECT COUNT(*) As No_Of_Rec, DATE(LastTransactionTimestamp) as Last_Transaction_Timestam FROM (
+SELECT DATE(last_transaction_timestamp), COUNT(distinct customer_rk)
+FROM (
   SELECT
   DISTINCT bpa.business_partner_no AS customer_rk,
   ocmpb.business_partner_id,
   ch.country_code AS dim_country_rk,
   cbh.corporate_brand_src_no AS corporate_brand_rk,
-  ocmpb.last_transaction_timestamp AS LastTransactionTimestamp,
+  ocmpb.last_transaction_timestamp,
   ocmpb.coupon_earliest_expiry_date AS coupon_earliest_expiry_timestamp,
   ocmpb.coupon_latest_issue_date AS coupon_latest_issue_timestamp,
   ocmpb.current_tier AS current_tier,
@@ -32,7 +33,8 @@ LEFT JOIN
   P1_CDW_DMBASE..dim_country AS ch
 ON
   ocmpb.country_id=ch.country_id
-WHERE DATE(last_transaction_timestamp) = (CURRENT_TIMESTAMP-1)
-)
-As Rec
-GROUP BY Last_Transaction_Timestam
+) AS Rec
+WHERE DATE(last_transaction_timestamp) >= CURRENT_DATE-7 
+and DATE(last_transaction_timestamp) < CURRENT_DATE
+GROUP BY DATE(last_transaction_timestamp)  
+ORDER BY DATE(last_transaction_timestamp)  

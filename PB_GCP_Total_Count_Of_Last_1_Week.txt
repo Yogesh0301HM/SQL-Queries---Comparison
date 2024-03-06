@@ -1,4 +1,0 @@
-SELECT DATE(last_transaction_timestamp) AS Last_Transaction_Timestamp, COUNT(*) AS NO_Of_Rec FROM `loyalty-p-3bc1.loyalty_srv.point_balance` 
-WHERE DATE(last_transaction_timestamp) >= current_date()-7 and DATE(last_transaction_timestamp) < current_date
-GROUP BY 1
-ORDER BY 1

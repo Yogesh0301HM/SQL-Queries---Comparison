@@ -1,3 +1,6 @@
-SELECT COUNT(distinct business_partner_id) AS NO_Of_Rec, DATE(last_transaction_timestamp) as Last_Transaction_Timestamp FROM `loyalty-p-3bc1.loyalty_srv.point_balance` 
-WHERE DATE(last_transaction_timestamp) >= (current_date() - 7) AND DATE(last_transaction_timestamp) < CURRENT_DATE
+SELECT COUNT(distinct business_partner_id) AS NO_Of_Rec, DATE(last_transaction_timestamp) AS Last_Transaction_Timestamp
+FROM `loyalty-p-3bc1.loyalty_srv.point_balance_latest` 
+WHERE DATE(last_transaction_timestamp) >= current_date()-7 
+and DATE(last_transaction_timestamp) < current_date()
 GROUP BY DATE(last_transaction_timestamp)
+ORDER BY DATE(last_transaction_timestamp)

@@ -1,11 +1,11 @@
-SELECT COUNT(DISTINCT customer_rk) As No_Of_BP_Ids, DATE(LastTrasactionTimestmap) AS Last_Transaction_Timestam 
+SELECT COUNT(DISTINCT customer_rk)AS NO_Of_BP_IDs, DATE(last_transaction_timestamp) AS Last_Transaction_Timestamp
 FROM (
   SELECT
   DISTINCT bpa.business_partner_no AS customer_rk,
   ocmpb.business_partner_id,
   ch.country_code AS dim_country_rk,
   cbh.corporate_brand_src_no AS corporate_brand_rk,
-  ocmpb.last_transaction_timestamp AS LastTrasactionTimestmap,
+  ocmpb.last_transaction_timestamp,
   ocmpb.coupon_earliest_expiry_date AS coupon_earliest_expiry_timestamp,
   ocmpb.coupon_latest_issue_date AS coupon_latest_issue_timestamp,
   ocmpb.current_tier AS current_tier,
@@ -36,4 +36,4 @@ ON
 WHERE DATE(last_transaction_timestamp) = (CURRENT_TIMESTAMP-1)
 )
 As Rec_BP
-GROUP BY Last_Transaction_Timestam
+GROUP BY DATE(last_transaction_timestamp)
